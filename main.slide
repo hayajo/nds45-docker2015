@@ -1,0 +1,320 @@
+2015年のDocker事情
+〜 今日帰ってすぐに始められるDocker 〜
+
+長岡 IT開発者 勉強会(NDS) 第45回勉強会
+
+5 Dec 2015
+
+hayajo
+@hayajo
+
+* Agenda
+
+- Dockerとは
+- 2015年のDocker
+- 2015年のDocker Changes
+- 今日帰ってすぐに始められるDocker
+
+* About me
+
+- Hayato Imai(@hayajo)
+- インフラエンジニア
+- [[http://www.amazon.co.jp/dp/4774173703][WEB+DB PRESS Vol.87 連載「Perl Hackers Hub」第33回「MojoliciousでかんたんWebアプリケーション開発]]
+
+* Dockerとは
+
+アプリケーションをパッケージング、デプロイ、実行するためのプラットフォーム。
+コンテナ仮想化技術のラッパー。
+
+.image img/vm_vs_container.png
+
+* 2015年のDokcer
+
+* 
+
+*2月*
+
+- Docker 1.5リリース
+- Docker Machine, Swarm, Composeが公開
+
+*3月*
+
+- StockPlaneを買収
+- Kitematicを買収
+
+*4月*
+
+- Docker 1.6リリース
+- Docker Registry 2.0リリース
+
+* 
+
+*6月*
+
+- Open Container Project発足
+- Docker 1.7リリース
+
+*8月*
+
+- Docker 1.8リリース
+
+*10月*
+
+- Tutumを買収
+
+*11月*
+
+- Docker 1.9リリース
+
+* 2015年のDocker Changes
+
+* Docker 1.5
+
+- IPv6 support
+- Read-only containers
+- Stats
+- Specify the Dockerfile to use in build
+- Open Image Spec
+
+* IPv6 support
+
+IPv6をサポート。
+
+http://docs.docker.com/v1.5/articles/networking/#ipv6
+
+* Read-only containers
+
+ファイルシステムをリードオンリーにしてコンテナを作成可能。
+ボリューム機能と組み合わせて書き込み可能な領域を限定できる。
+
+  $ docker run --rm -it --read-only -v `pwd`:/mnt busybox /bin/sh
+
+* Stats
+
+Stats APIでコンテナのメトリクスを取得可能。
+
+  $ docker stats wordpress mysql
+  CONTAINER           CPU %               MEM USAGE / LIMIT   MEM %               NET I/O               BLOCK I/O
+  mysql               0.03%               220.3 MB / 2.1 GB   10.49%              29.09 kB / 136.1 kB   1.237 MB / 12.67 MB
+  wordpress           0.01%               69.44 MB / 2.1 GB   3.31%               167.2 kB / 147.9 kB   1.597 MB / 16.38 kB
+
+* Specify the Dockerfile to use in build
+
+オプションで `Dockerfile` （というファイル名）を変更可能。
+
+  $ docker build -f MyDockerfile -t myapp .
+
+* Open Image Spec
+
+Dockerイメージの仕様を公開。
+
+https://github.com/docker/docker/blob/master/image/spec/v1.md
+
+* Docker 1.6
+
+- Container and Image Labels
+- Windows Client Preview
+- Logging Drivers
+- Content Addressable Image Identifiers
+- --cgroup-parent
+- Ulimits
+
+* Container and Image Labels
+
+イメージ、コンテナの管理目的でラベルを指定可能
+
+*Dockerfile*
+
+  FROM busybox
+  LABEL desc="my application"
+  ...
+
+*-l(--label)*
+
+  $ docker run -l desc='myapp container' myapp
+
+-f(--filter)オプションでラベルを指定した絞り込みが可能
+
+  $ docker images -f 'label=desc=my application'
+  $ docker ps -a -f "label=desc=myapp container"
+
+* Windows Client Preview
+
+Windows環境のネイティブクライアント。
+WindowsからLinux上のDocker Engineを操作可能。
+
+* Logging Drivers
+
+ログ出力のためのドライバを指定可能。
+
+- json-file(default)
+- syslog
+- none
+
+* Content Addressable Image Identifiers
+
+`pull` , `build` , `run` 時にコミットハッシュ(digest)を指定可能。
+
+  $ docker pull NAME@DIGEST
+
+* --cgroup-parent
+
+cgroupを指定可能。
+
+* Ulimits
+
+ulimitのデフォルト値、コンテナごとのulimitを指定可能。
+
+  $ docker daemon --default-ulimit nproc=1024:2048
+  $ docker run -d --ulimit nproc=2048:4096 nginx
+
+* Docker 1.7
+
+- Networking
+- Plugins
+- ZFSストレージドライバ
+
+* Networking
+
+異なるホスト間のコンテナで通信可能（実験的リリース）。
+
+* Plugins
+
+Docker Engineへのプラグイン機能の追加（実験的リリース）。
+ネットワークとボリュームをサポート。
+
+* ZFSストレージドライバ
+
+ZFSをサポート。
+
+* Docker 1.8
+
+- Volume Plugins
+- Logging Driver
+- その他
+
+* Volume Plugins
+
+1.7で実験的リリースだったボリュームプラグインが安定版としてリリース。
+Blockbridge, Ceph, ClusterHQ, EMC, Portworx 用のプラグインが利用可能。
+
+* Logging Driver
+
+ロギングドライバーに `GELF` と `Fluentd` が追加。
+
+* その他
+
+- `docker`cp` でホストからコンテナへのファイルコピーが可能
+
+  $ docker cp /localpath CONTAINER:/containerpath
+
+- `docker`daemon` の追加（ `docker`-d` )
+
+- `docker`ps`--format` で出力のカスタマイズ
+
+  $ docker ps --format '{{ .ID }}: {{ .Command }}'
+
+- Dockerクライアントの設定ファイルが `~/.docker` に置かれるようになった
+
+* Docker 1.9
+
+- Multi-host Networking
+- Persistent Storage
+- ARG
+- その他
+
+* Multi-host Networking
+
+1.7で実験的リリースだったネットワーク機能が安定版としてリリース。
+複数のホストにまたがる仮想ネットワークを作成可能。
+
+* Persistent Storage
+
+1.8に含まれるボリュームプラグインを最適化。
+
+* ARG
+
+Dockerfileの `ARG` でビルド時(--build-argで指定)のみ使用する引数を指定可能。
+
+*Dockerfile*
+
+  FROM busybox
+  ARG MESSAGE="hello world"
+  ENV MESSAGE $MESSAGE
+  CMD echo $MESSAGE
+
+*--build-arg*
+
+  $ docker build --no-cache -t myapp .
+  $ docker run myapp
+  hello world
+  $ docker build --no-cache --build-arg MESSAGE='goodbye world' -t myapp:goodbye
+  $ docker run myapp:goodbye
+  goodbye world
+
+* その他
+
+- イメージの並列取得
+- `AWS`CloudWath` ロギングドライバの追加
+- `docker`stats` でディスクのメトリクスを表示
+- Dockerfileの `STOPSIGNAL` ( `--stop-signal` )で `docker`stop` のシグナルをカスタマイズ可能
+
+  STOPSIGNAL SIGUSR1
+
+
+* 今日帰ってすぐに始められるDocker
+
+* Docker実行環境を準備する
+
+[[https://www.docker.com/docker-toolbox][Docker Toolbox]]
+https://www.docker.com/docker-toolbox
+
+  Docker実行環境一式のインストーラ（Windows/Mac）。
+
+  * Docker Client
+  * Docker Machine
+  * Docker Compose
+  * Docker Kitematic
+  * VirtualBox
+
+* Dockerコンテナのライフサイクル
+
+.image img/lifecycle.png
+
+* Dockerイメージを取得する
+
+hub.docker.com
+https://hub.docker.com/explore/
+
+  # wordpressとmysqlのDockerイメージを取得する。
+  $ docker pull wordpress
+  $ docker pull mysql
+
+* Dockerコンテナを実行する
+
+mysqlとwordpressのコンテナを起動する。
+
+  $ docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -d mysql
+  $ docker run --name wordpress --link mysql:mysql -p 8080:80 -d wordpress
+
+ブラウザで動作を確認する。
+
+  $ open $(docker-machine default ip):8080
+
+* Dockerコンテナを停止/削除する
+
+コンテナ一覧を確認する。
+
+  $ docker ps
+  CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
+  f2f8c9bcd041        wordpress           "/entrypoint.sh apach"   29 minutes ago      Up 29 minutes       0.0.0.0:8080->80/tcp   wordpress
+  44251596d059        mysql               "/entrypoint.sh mysql"   30 minutes ago      Up 30 minutes       3306/tcp               mysql
+
+コンテナを停止する。
+
+  $ docker stop wordpress mysql
+
+コンテナを削除する。
+
+  $ docker rm wordpress mysql
+
