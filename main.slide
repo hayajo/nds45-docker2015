@@ -300,7 +300,7 @@ mysqlとwordpressのコンテナを起動する。
 
 ブラウザで動作を確認する。
 
-  $ open $(docker-machine default ip):8080
+  $ open http://$(docker-machine ip default):8080
 
 * Dockerコンテナを停止/削除する
 
