@@ -232,6 +232,7 @@ Blockbridge, Ceph, ClusterHQ, EMC, Portworx 用のプラグインが利用可能
 * Persistent Storage
 
 1.8に含まれるボリュームプラグインを最適化。
+Swarmと連携してクラスタ全体で永続的ストレージを管理可能。
 
 * ARG
 
@@ -270,13 +271,13 @@ Dockerfileの `ARG` でビルド時(--build-argで指定)のみ使用する引�
 [[https://www.docker.com/docker-toolbox][Docker Toolbox]]
 https://www.docker.com/docker-toolbox
 
-  Docker実行環境一式のインストーラ（Windows/Mac）。
+Docker実行環境一式のインストーラ（Windows/Mac）。
 
-  * Docker Client
-  * Docker Machine
-  * Docker Compose
-  * Docker Kitematic
-  * VirtualBox
+- Docker Client
+- Docker Machine
+- Docker Compose
+- Docker Kitematic
+- VirtualBox
 
 * Dockerコンテナのライフサイクル
 
